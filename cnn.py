@@ -37,6 +37,16 @@ class SimpleCNN(nn.Module):
         x = self.fc2(x)
         return x
 
+def predict(model, input_tensor):
+    """
+    입력 이미지 텐서에 대해 모델이 예측한 클래스(숫자 0~9)를 반환하는 기능입니다.
+    """
+    model.eval()
+    with torch.no_grad():
+        outputs = model(input_tensor)
+        _, predicted = torch.max(outputs, 1)
+    return predicted.item()
+
 # 모델 생성 및 구조 확인
 model = SimpleCNN()
 print(model)
@@ -69,3 +79,8 @@ optimizer.step()
 output_after = model(sample_input)
 loss_after = criterion(output_after, target)
 print(f"학습 1단계 진행 후 Loss: {loss_after.item():.4f}")
+print("\n출력 텐서 형태(Shape):", output.shape) # 예상 결과: torch.Size([1, 10])
+
+# 추가한 predict 기능 테스트
+predicted_class = predict(model, sample_input)
+print("예측된 클래스(숫자):", predicted_class)
