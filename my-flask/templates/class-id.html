@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>class-id</title>
+</head>
+
+<style>
+    #name.my-box {
+        width: 200px;
+        height: 60px;
+        background: red;
+        margin-bottom: 20px;
+    }
+
+    .round {
+        border-radius: 30px;
+        background: green;
+    }
+
+    #one-box {
+        width: 50px;
+        height: 50px;
+        background: black;
+        margin-bottom: 20px;
+    }
+
+    .parent span {
+        font-size: 20px;
+        background: yellow;
+    }
+</style>
+
+<body>
+    <div class="parent">
+        <span>span 1</span>
+        <span>span 2</span>
+        <span>span 3</span>
+    </div>
+    <span>span 4</span>
+
+    <div id="one-box"></div> <!-- 아이디 : 고유성/JS연동(태그지정) -->
+
+    <div class="my-box" style="background:blue;">div1</div> <!-- selector 순위 : Style > Id > Class -->
+    <div class="round my-box">div2</div>
+    <div class="my-box">div3</div>
+    <div class="my-box">div4</div>
+    <div class="my-box" id="name">div5</div>
+</body>
+
+</html>

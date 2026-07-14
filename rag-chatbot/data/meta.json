@@ -1,0 +1,7 @@
+{
+  "embed_model": "jhgan/ko-sroberta-multitask",
+  "pdf_path": "sample.pdf",
+  "chunk_size": 500,
+  "overlap": 50,
+  "num_chunks": 2
+}

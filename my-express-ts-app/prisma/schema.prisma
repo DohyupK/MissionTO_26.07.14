@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model item {
+  idx        BigInt    @id @default(autoincrement())
+  name       String    @db.VarChar(200)
+  price      Int
+  created_at DateTime  @db.DateTime(0)
+  maker      String    @db.VarChar(100)
+  stock      Int       @default(0)
+  payment    payment[]
+}
+
+model payment {
+  idx         BigInt   @id @default(autoincrement())
+  user_idx    BigInt
+  item_idx    BigInt
+  created_at  DateTime @db.DateTime(0)
+  count       Int?
+  total_price Int?
+  item        item     @relation(fields: [item_idx], references: [idx], onDelete: Cascade, map: "FK_payment_item")
+  user        user     @relation(fields: [user_idx], references: [idx], onDelete: Cascade, map: "FK_payment_user")
+
+  @@index([item_idx], map: "FK_payment_item")
+  @@index([user_idx], map: "FK_payment_user")
+}
+
+model user {
+  idx        BigInt          @id @default(autoincrement())
+  id         String          @unique(map: "id") @db.VarChar(200)
+  pw         String          @db.VarChar(200)
+  nick       String          @unique(map: "nick") @db.VarChar(100)
+  address    String?         @db.VarChar(300)
+  created_at DateTime?       @db.DateTime(0)
+  updated_at DateTime?       @db.DateTime(0)
+  is_active  user_is_active? @default(Y)
+  point      Int?            @default(10000000)
+  payment    payment[]
+}
+
+enum user_is_active {
+  Y
+  N
+}

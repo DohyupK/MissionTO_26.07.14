@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris 붓꽃 예측</title>
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/iris.css">
+</head>
+
+<body>
+
+    <div class="iris-page">
+        <div class="iris-card">
+            <div class="iris-header">
+                <div class="iris-icon" aria-hidden="true">🌸</div>
+                <div class="iris-header-text">
+                    <h1>Iris 붓꽃 예측</h1>
+                    <p>꽃받침·꽃잎 4가지 측정값을 입력하면 붓꽃 품종을 예측합니다.</p>
+                </div>
+            </div>
+
+            <form class="iris-form" id="iris-form">
+                <div class="input-group">
+                    <label for="sepal_length">꽃받침 길이 (Sepal Length)</label>
+                    <div class="input-wrap">
+                        <span class="field-icon" aria-hidden="true">↕</span>
+                        <input type="number" id="sepal_length" name="sepal_length" step="0.1" min="0"
+                            placeholder="예: 5.1" required>
+                        <span class="unit">cm</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="sepal_width">꽃받침 너비 (Sepal Width)</label>
+                    <div class="input-wrap">
+                        <span class="field-icon" aria-hidden="true">↔</span>
+                        <input type="number" id="sepal_width" name="sepal_width" step="0.1" min="0" placeholder="예: 3.5"
+                            required>
+                        <span class="unit">cm</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="petal_length">꽃잎 길이 (Petal Length)</label>
+                    <div class="input-wrap">
+                        <span class="field-icon" aria-hidden="true">↕</span>
+                        <input type="number" id="petal_length" name="petal_length" step="0.1" min="0"
+                            placeholder="예: 1.4" required>
+                        <span class="unit">cm</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="petal_width">꽃잎 너비 (Petal Width)</label>
+                    <div class="input-wrap">
+                        <span class="field-icon" aria-hidden="true">↔</span>
+                        <input type="number" id="petal_width" name="petal_width" step="0.1" min="0" placeholder="예: 0.2"
+                            required>
+                        <span class="unit">cm</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-analyze" id="submit-btn">분석하기</button>
+            </form>
+
+            <div class="iris-tags">
+                <span class="tag tag-setosa" data-species="setosa">Setosa</span>
+                <span class="tag tag-versicolor" data-species="versicolor">Versicolor</span>
+                <span class="tag tag-virginica" data-species="virginica">Virginica</span>
+            </div>
+
+            <div class="iris-result" id="iris-result" hidden>
+                <p class="result-label">예측 결과</p>
+                <p class="result-species" id="result-species">-</p>
+                <div class="result-confidence">
+                    <span class="confidence-label">신뢰도</span>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidence-fill"></div>
+                    </div>
+                    <span class="confidence-value" id="result-confidence">0%</span>
+                </div>
+                <p class="result-message" id="result-message"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"
+        integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/iris.js') }}"></script>
+
+</body>
+
+</html>

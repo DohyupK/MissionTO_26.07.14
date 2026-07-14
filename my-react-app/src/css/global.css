@@ -1,0 +1,304 @@
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    background-color: #f4f6f8;
+    color: #1a1a2e;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+}
+
+.header__user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.45);
+}
+
+.header__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.header__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.header__email {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.2px;
+}
+
+.header__buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header__btn {
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.header__btn:active {
+    transform: scale(0.97);
+}
+
+.header__btn--login {
+    background-color: #667eea;
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+.header__btn--login:hover {
+    background-color: #5a6fd6;
+    box-shadow: 0 4px 14px rgba(102, 126, 234, 0.55);
+}
+
+.header__btn--logout {
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.85);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+}
+
+.header__btn--logout:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+
+.header__btn--signup {
+    background-color: #fff;
+    color: #1a1a2e;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.header__btn--signup:hover {
+    background-color: #eef0ff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Todo Page (Dark + Yellow) ── */
+.todo-page {
+    min-height: 100vh;
+    background-color: #191919;
+    color: #f0f0f0;
+    font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    padding: 48px 20px;
+}
+
+.todo-page__inner {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.todo-header {
+    margin-bottom: 32px;
+    padding-left: 12px;
+    border-left: 4px solid #fee500;
+}
+
+.todo-header__tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #191919;
+    background-color: #fee500;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.todo-header__title {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.todo-header__id {
+    margin: 0;
+    font-size: 14px;
+    color: #fee500;
+    font-weight: 600;
+}
+
+.todo-loading {
+    text-align: center;
+    padding: 60px 0;
+    color: #fee500;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.todo-card {
+    background-color: #252525;
+    border-radius: 12px;
+    border: 1px solid #333;
+    padding: 28px 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.todo-card__status {
+    margin-bottom: 16px;
+}
+
+.todo-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.todo-badge--done {
+    background-color: #fee500;
+    color: #191919;
+}
+
+.todo-badge--pending {
+    background-color: transparent;
+    color: #fee500;
+    border: 1.5px solid #fee500;
+}
+
+.todo-card__title {
+    margin: 0 0 24px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: #fff;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #333;
+}
+
+.todo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.todo-list__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #2e2e2e;
+    font-size: 14px;
+}
+
+.todo-list__item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.todo-list__label {
+    color: #888;
+    font-weight: 500;
+}
+
+.todo-list__value {
+    color: #fee500;
+    font-weight: 700;
+}
+
+.todo-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.todo-items__card {
+    background-color: #252525;
+    border-radius: 12px;
+    border: 1px solid #333;
+    padding: 20px 22px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.todo-items__card:hover {
+    border-color: #fee500;
+    box-shadow: 0 6px 24px rgba(254, 229, 0, 0.08);
+}
+
+.todo-items__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.todo-items__id {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fee500;
+}
+
+.todo-items__title {
+    margin: 0 0 14px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.55;
+    color: #fff;
+}
+
+.todo-items__link {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fee500;
+    text-decoration: none;
+    letter-spacing: 0.2px;
+    transition: opacity 0.2s;
+}
+
+.todo-items__link:hover {
+    opacity: 0.75;
+}

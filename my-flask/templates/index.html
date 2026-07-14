@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Hub — 사내 임직원 AI 관리 시스템</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e17;
+      --bg-card: #111827;
+      --bg-elevated: #1a2235;
+      --border: rgba(255,255,255,0.08);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --accent-glow: rgba(59,130,246,0.35);
+      --green: #10b981;
+      --purple: #8b5cf6;
+      --orange: #f59e0b;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Background ── */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow-1 { top: -200px; left: -100px; background: var(--accent); }
+    .bg-glow-2 { bottom: -200px; right: -100px; background: var(--purple); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    section { padding: 100px 0; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+
+    nav.scrolled {
+      background: rgba(10,14,23,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom-color: var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-lg {
+      padding: 14px 28px;
+      font-size: 1rem;
+      border-radius: 10px;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding-top: 160px;
+      padding-bottom: 80px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 100px;
+      font-size: 0.82rem;
+      color: var(--accent-light);
+      font-weight: 500;
+      margin-bottom: 28px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-light), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Dashboard Preview ── */
+    .dashboard-preview {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    }
+
+    .preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .preview-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .preview-dot.red { background: #ef4444; }
+    .preview-dot.yellow { background: #f59e0b; }
+    .preview-dot.green { background: #10b981; }
+
+    .preview-title {
+      margin-left: 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .preview-body {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 320px;
+    }
+
+    .preview-sidebar {
+      background: rgba(0,0,0,0.2);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: default;
+    }
+
+    .sidebar-item.active {
+      color: var(--accent-light);
+      background: rgba(59,130,246,0.08);
+      border-right: 2px solid var(--accent);
+    }
+
+    .preview-main { padding: 24px; }
+
+    .preview-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .mini-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .mini-card-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .mini-card-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .mini-card-value.blue { color: var(--accent-light); }
+    .mini-card-value.green { color: var(--green); }
+    .mini-card-value.purple { color: var(--purple); }
+
+    .chart-placeholder {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      height: 140px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--accent), rgba(59,130,246,0.3));
+      border-radius: 4px 4px 0 0;
+      animation: growBar 1.2s ease forwards;
+      transform-origin: bottom;
+      transform: scaleY(0);
+    }
+
+    @keyframes growBar {
+      to { transform: scaleY(1); }
+    }
+
+    /* ── Section Header ── */
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-light);
+      margin-bottom: 12px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
+
+    /* ── Features ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(59,130,246,0.3);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .feature-icon.blue { background: rgba(59,130,246,0.15); }
+    .feature-icon.green { background: rgba(16,185,129,0.15); }
+    .feature-icon.purple { background: rgba(139,92,246,0.15); }
+    .feature-icon.orange { background: rgba(245,158,11,0.15); }
+    .feature-icon.red { background: rgba(239,68,68,0.15); }
+    .feature-icon.teal { background: rgba(20,184,166,0.15); }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── How it works ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 12.5%;
+      right: 12.5%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      opacity: 0.3;
+    }
+
+    .step {
+      text-align: center;
+      padding: 0 16px;
+      position: relative;
+    }
+
+    .step-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent-light);
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Security ── */
+    .security-section {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .security-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .security-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .security-list li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .check-icon {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      background: rgba(16,185,129,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .security-list h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .security-list p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .security-visual {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+    }
+
+    .shield-icon {
+      font-size: 64px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .compliance-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .compliance-tag {
+      padding: 8px 16px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Pricing / Plans ── */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .plan-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      position: relative;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .plan-card:hover { transform: translateY(-4px); }
+
+    .plan-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 100px;
+    }
+
+    .plan-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .plan-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .plan-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      min-height: 40px;
+    }
+
+    .plan-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .plan-features li {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .plan-features li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .plan-card .btn { width: 100%; justify-content: center; }
+
+    /* ── FAQ ── */
+    .faq-list {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 20px 24px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .faq-question:hover { background: rgba(255,255,255,0.02); }
+
+    .faq-arrow {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      transition: transform 0.3s;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+    }
+
+    .faq-answer p {
+      padding: 0 24px 20px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 80px 0;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15));
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: var(--radius-lg);
+      padding: 64px 48px;
+      text-align: center;
+    }
+
+    .cta-box h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .cta-box p {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 1.05rem;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0 32px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-brand p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+      line-height: 1.7;
+      max-width: 280px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col a {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover { color: var(--text); }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .features-grid,
+      .plans-grid { grid-template-columns: 1fr 1fr; }
+
+      .steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .steps::before { display: none; }
+
+      .security-grid { grid-template-columns: 1fr; }
+
+      .preview-body { grid-template-columns: 1fr; }
+      .preview-sidebar { display: none; }
+      .preview-cards { grid-template-columns: 1fr 1fr; }
+
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links, .nav-cta { display: none; }
+      .mobile-menu-btn { display: block; }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(10,14,23,0.97);
+        backdrop-filter: blur(16px);
+        padding: 20px 24px;
+        gap: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .features-grid,
+      .plans-grid,
+      .preview-cards { grid-template-columns: 1fr; }
+
+      .steps { grid-template-columns: 1fr; }
+
+      .hero-stats { gap: 28px; }
+
+      .cta-box { padding: 40px 24px; }
+
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">🤖</div>
+        AI Hub
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#features">기능</a></li>
+        <li><a href="#how-it-works">이용 방법</a></li>
+        <li><a href="#security">보안</a></li>
+        <li><a href="#plans">요금제</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#" class="btn btn-ghost">로그인</a>
+        <a href="#cta" class="btn btn-primary">시작하기</a>
+      </div>
+      <button class="mobile-menu-btn" id="menuBtn" aria-label="메뉴">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        사내 AI 거버넌스 플랫폼 v2.0 출시
+      </div>
+      <h1>임직원 AI 사용을<br><span>안전하고 효율적으로</span> 관리하세요</h1>
+      <p class="hero-desc">
+        AI Hub는 사내 임직원의 AI 도구 사용을 통합 관리하는 엔터프라이즈 플랫폼입니다.
+        비용, 보안, 컴플라이언스를 한곳에서 제어하세요.
+      </p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-primary btn-lg">무료로 시작하기 →</a>
+        <a href="#features" class="btn btn-ghost btn-lg">기능 살펴보기</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-value">1,200+</div>
+          <div class="stat-label">활성 임직원</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">38%</div>
+          <div class="stat-label">AI 비용 절감</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">99.9%</div>
+          <div class="stat-label">시스템 가용성</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">24/7</div>
+          <div class="stat-label">보안 모니터링</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard Preview -->
+  <section style="padding-top: 0; padding-bottom: 100px;">
+    <div class="container">
+      <div class="dashboard-preview">
+        <div class="preview-bar">
+          <div class="preview-dot red"></div>
+          <div class="preview-dot yellow"></div>
+          <div class="preview-dot green"></div>
+          <span class="preview-title">ai-hub.internal/dashboard</span>
+        </div>
+        <div class="preview-body">
+          <div class="preview-sidebar">
+            <div class="sidebar-item active">📊 대시보드</div>
+            <div class="sidebar-item">👥 사용자 관리</div>
+            <div class="sidebar-item">🔑 API 키</div>
+            <div class="sidebar-item">💰 비용 분석</div>
+            <div class="sidebar-item">🛡️ 보안 로그</div>
+            <div class="sidebar-item">⚙️ 설정</div>
+          </div>
+          <div class="preview-main">
+            <div class="preview-cards">
+              <div class="mini-card">
+                <div class="mini-card-label">이번 달 API 호출</div>
+                <div class="mini-card-value blue">284,521</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-card-label">월간 AI 비용</div>
+                <div class="mini-card-value green">₩4.2M</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-card-label">활성 사용자</div>
+                <div class="mini-card-value purple">847</div>
+              </div>
+            </div>
+            <div class="chart-placeholder">
+              <div class="chart-bar" style="height: 45%; animation-delay: 0.1s;"></div>
+              <div class="chart-bar" style="height: 72%; animation-delay: 0.2s;"></div>
+              <div class="chart-bar" style="height: 58%; animation-delay: 0.3s;"></div>
+              <div class="chart-bar" style="height: 85%; animation-delay: 0.4s;"></div>
+              <div class="chart-bar" style="height: 65%; animation-delay: 0.5s;"></div>
+              <div class="chart-bar" style="height: 90%; animation-delay: 0.6s;"></div>
+              <div class="chart-bar" style="height: 78%; animation-delay: 0.7s;"></div>
+              <div class="chart-bar" style="height: 95%; animation-delay: 0.8s;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">핵심 기능</span>
+        <h2>AI 거버넌스의 모든 것</h2>
+        <p>임직원 AI 사용 전 과정을 통합 관리하고, 조직의 AI 전략을 체계적으로 운영하세요.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon blue">📊</div>
+          <h3>통합 대시보드</h3>
+          <p>부서별·개인별 AI 사용량, 비용, 모델별 호출 통계를 실시간으로 모니터링합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon green">🔑</div>
+          <h3>API 키 중앙 관리</h3>
+          <p>개인 API 키 사용을 금지하고, 중앙 발급·회수·로테이션으로 보안을 강화합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon purple">👥</div>
+          <h3>역할 기반 접근 제어</h3>
+          <p>직급·부서·프로젝트별 AI 모델 접근 권한을 세밀하게 설정하고 관리합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon orange">💰</div>
+          <h3>비용 최적화</h3>
+          <p>부서별 예산 한도 설정, 사용량 알림, 모델 자동 전환으로 AI 비용을 절감합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon red">🛡️</div>
+          <h3>데이터 유출 방지</h3>
+          <p>민감 정보 탐지, 프롬프트 필터링, 출력물 감사 로그로 데이터를 보호합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon teal">📋</div>
+          <h3>승인 워크플로</h3>
+          <p>신규 AI 도구 도입, 고비용 모델 사용, 외부 API 연동을 승인 절차로 관리합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">이용 방법</span>
+        <h2>4단계로 시작하세요</h2>
+        <p>복잡한 설정 없이 빠르게 AI 거버넌스 체계를 구축할 수 있습니다.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>SSO 연동</h3>
+          <p>사내 SSO(Okta, Azure AD 등)와 연동하여 임직원 계정을 자동 동기화합니다.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>정책 설정</h3>
+          <p>부서별 AI 사용 정책, 허용 모델, 예산 한도를 관리자 콘솔에서 설정합니다.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>프록시 배포</h3>
+          <p>AI Hub 프록시를 통해 모든 AI API 호출을 중앙에서 라우팅하고 기록합니다.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h3>모니터링</h3>
+          <p>대시보드에서 사용량·비용·보안 이벤트를 실시간으로 확인하고 대응합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section id="security" class="security-section">
+    <div class="container">
+      <div class="security-grid">
+        <div>
+          <div class="section-header" style="text-align: left; margin-bottom: 36px;">
+            <span class="section-tag">보안 & 컴플라이언스</span>
+            <h2>엔터프라이즈급<br>보안을 기본으로</h2>
+            <p style="margin: 0;">금융·공공기관 수준의 보안 기준을 충족하는 AI 관리 플랫폼입니다.</p>
+          </div>
+          <ul class="security-list">
+            <li>
+              <div class="check-icon">✓</div>
+              <div>
+                <h4>데이터 온프레미스 저장</h4>
+                <p>모든 로그와 메타데이터는 사내 서버에 저장되며 외부로 전송되지 않습니다.</p>
+              </div>
+            </li>
+            <li>
+              <div class="check-icon">✓</div>
+              <div>
+                <h4>프롬프트 PII 자동 마스킹</h4>
+                <p>주민번호, 계좌번호, 이메일 등 개인정보가 AI에 전달되기 전 자동으로 차단합니다.</p>
+              </div>
+            </li>
+            <li>
+              <div class="check-icon">✓</div>
+              <div>
+                <h4>감사 로그 7년 보관</h4>
+                <p>모든 AI 상호작용 기록을 규정에 맞게 보관하고 검색·내보내기가 가능합니다.</p>
+              </div>
+            </li>
+            <li>
+              <div class="check-icon">✓</div>
+              <div>
+                <h4>ISO 27001 / SOC 2 Type II</h4>
+                <p>국제 보안 인증을 획득하여 엔터프라이즈 환경에 안심하고 도입할 수 있습니다.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="security-visual">
+          <div class="shield-icon">🛡️</div>
+          <div class="compliance-tags">
+            <span class="compliance-tag">ISO 27001</span>
+            <span class="compliance-tag">SOC 2</span>
+            <span class="compliance-tag">GDPR</span>
+            <span class="compliance-tag">ISMS-P</span>
+            <span class="compliance-tag">Zero Trust</span>
+            <span class="compliance-tag">AES-256</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Plans -->
+  <section id="plans">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">요금제</span>
+        <h2>조직 규모에 맞는 플랜</h2>
+        <p>모든 플랜에 14일 무료 체험이 포함됩니다. 연간 결제 시 20% 할인.</p>
+      </div>
+      <div class="plans-grid">
+        <div class="plan-card">
+          <div class="plan-name">Starter</div>
+          <div class="plan-title">팀 플랜</div>
+          <div class="plan-desc">50명 이하 팀을 위한 기본 AI 관리</div>
+          <ul class="plan-features">
+            <li>최대 50명 사용자</li>
+            <li>기본 대시보드</li>
+            <li>API 키 중앙 관리</li>
+            <li>월 100만 토큰 포함</li>
+            <li>이메일 지원</li>
+          </ul>
+          <a href="#cta" class="btn btn-ghost">문의하기</a>
+        </div>
+        <div class="plan-card featured">
+          <div class="plan-badge">가장 인기</div>
+          <div class="plan-name">Business</div>
+          <div class="plan-title">기업 플랜</div>
+          <div class="plan-desc">중견기업을 위한 완전한 AI 거버넌스</div>
+          <ul class="plan-features">
+            <li>최대 500명 사용자</li>
+            <li>고급 분석 & 리포트</li>
+            <li>역할 기반 접근 제어</li>
+            <li>승인 워크플로</li>
+            <li>SSO / SAML 연동</li>
+            <li>전담 CSM 배정</li>
+          </ul>
+          <a href="#cta" class="btn btn-primary">시작하기</a>
+        </div>
+        <div class="plan-card">
+          <div class="plan-name">Enterprise</div>
+          <div class="plan-title">엔터프라이즈</div>
+          <div class="plan-desc">대기업·공공기관 맞춤형 솔루션</div>
+          <ul class="plan-features">
+            <li>무제한 사용자</li>
+            <li>온프레미스 배포</li>
+            <li>커스텀 정책 엔진</li>
+            <li>SLA 99.99% 보장</li>
+            <li>24/7 전화 지원</li>
+            <li>보안 감사 지원</li>
+          </ul>
+          <a href="#cta" class="btn btn-ghost">영업팀 문의</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">FAQ</span>
+        <h2>자주 묻는 질문</h2>
+        <p>AI Hub 도입 전 궁금한 점을 확인하세요.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">
+            AI Hub는 어떤 AI 모델을 지원하나요?
+            <span class="faq-arrow">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>GPT-4o, Claude 3.5, Gemini Pro, Llama 3 등 주요 LLM을 지원합니다. 사내 자체 호스팅 모델(vLLM, Ollama)도 프록시를 통해 연동할 수 있습니다.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            기존 AI 도구(ChatGPT, Copilot 등)와 함께 사용할 수 있나요?
+            <span class="faq-arrow">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>네. AI Hub 프록시 또는 브라우저 확장 프로그램을 통해 기존 도구 사용을 중앙에서 모니터링하고 정책을 적용할 수 있습니다.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            도입에 얼마나 시간이 걸리나요?
+            <span class="faq-arrow">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>클라우드 SaaS 버전은 SSO 연동 후 1~2일 내 운영 가능합니다. 온프레미스 배포는 보안 검토 포함 2~4주가 소요됩니다.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            데이터는 어디에 저장되나요?
+            <span class="faq-arrow">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>SaaS 버전은 국내 AWS 리전(seoul)에 저장됩니다. Enterprise 플랜은 완전 온프레미스 배포로 모든 데이터가 사내 인프라에만 존재합니다.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            무료 체험 기간 이후 자동 결제되나요?
+            <span class="faq-arrow">▾</span>
+          </button>
+          <div class="faq-answer">
+            <p>아니요. 14일 무료 체험 종료 후 별도 계약 없이는 자동 결제되지 않습니다. 체험 기간 중 언제든지 데이터를 내보낼 수 있습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="cta-section">
+    <div class="container">
+      <div class="cta-box">
+        <h2>지금 바로 AI 거버넌스를 시작하세요</h2>
+        <p>14일 무료 체험 · 신용카드 불필요 · 5분 내 설정 완료</p>
+        <div class="cta-actions">
+          <a href="#" class="btn btn-primary btn-lg">무료 체험 시작 →</a>
+          <a href="#" class="btn btn-ghost btn-lg">데모 요청</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <div class="logo-icon">🤖</div>
+            AI Hub
+          </a>
+          <p>사내 임직원 AI 사용을 안전하고 효율적으로 관리하는 엔터프라이즈 AI 거버넌스 플랫폼.</p>
+        </div>
+        <div class="footer-col">
+          <h4>제품</h4>
+          <ul>
+            <li><a href="#features">기능</a></li>
+            <li><a href="#plans">요금제</a></li>
+            <li><a href="#">API 문서</a></li>
+            <li><a href="#">릴리즈 노트</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>회사</h4>
+          <ul>
+            <li><a href="#">소개</a></li>
+            <li><a href="#">채용</a></li>
+            <li><a href="#">블로그</a></li>
+            <li><a href="#">파트너</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>지원</h4>
+          <ul>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#">고객센터</a></li>
+            <li><a href="#">보안 센터</a></li>
+            <li><a href="#">개인정보처리방침</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI Hub. All rights reserved.</span>
+        <span>사내 전용 시스템 · 무단 접근 금지</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.getElementById('navLinks');
+    menuBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // Close mobile menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+  </script>
+</body>
+</html>
